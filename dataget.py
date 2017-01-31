@@ -1,6 +1,9 @@
 import re
 import json
 from pprint import pprint
+from pymongo import MongoClient
+
+MongoClient("localhost", 27017)
 
 
 class dataget():
