@@ -38,6 +38,7 @@ class Datacrunch():
                 print("Could not concat new data with old, exception: " + e)
 
         self.tripData.to_csv("res/totTrip.csv", index=False)
+
         return self.tripData
 
 
