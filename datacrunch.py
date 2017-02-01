@@ -2,11 +2,30 @@ import numpy as np
 import pandas as pd
 import os
 import json
+import pymongo
+from pymongo import MongoClient
+
 
 class Datacrunch():
     def __init__(self):
+        self.client = MongoClient()
+        # MongoClient('localhost', 27017), MongoClient('mongodb://localhost:27017/')
+        self.tripDb = self.client.tripDb
+        self.posts = self.tripDb.posts
         self.trippath = "res/trips"
-        self.tripData = pd.read_csv("res/totTrip.csv", sep=",", parse_dates=['Start time', 'End time'])
+        # self.tripData = pd.read_csv("res/totTrip.csv", sep=",", parse_dates=['Start time', 'End time'])
+
+    def jsonToDB(self, jsonFile):
+        """
+        Takes a monthly json file from OSLO bysykkel and adds the data to the database
+        :param jsonFile: json file
+        :return: None
+        """
+        data = json.load(jsonFile)["trips"]
+        self.posts.insert_many(data)
+
+    def getFromDB(self):
+        print(self.posts.find_one())
 
     def tripMerge(self):
         """
@@ -35,13 +54,16 @@ class Datacrunch():
             try:
                 self.tripData = pd.concat([self.tripData]+dfList)
             except Exception as e:
-                print("Could not concat new data with old, exception: " + e)
+                print("Could not concat new data with old, exception:")
+                print(e)
 
         self.tripData.to_csv("res/totTrip.csv", index=False)
-
         return self.tripData
 
+    def clearDB(self):
+        self.posts.remove()
 
 if __name__ == "__main__":
     a = Datacrunch()
-    print(a.tripMerge())
+    a.jsonToDB()
+    a.getFromDB()

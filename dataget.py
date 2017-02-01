@@ -1,6 +1,4 @@
-import re
 import json
-from pprint import pprint
 from pymongo import MongoClient
 from bs4 import BeautifulSoup as bs
 import pandas as pd
@@ -12,10 +10,10 @@ class dataget():
     def __init__(self):
         pass
 
-    def fromHtml(self, url):
-        pass
-
-    def fromCsv(self, path):
+    def getMonthlyTrips(self):
+        # TODO: Get new compressed file from oslo bysykkel and send the json file to datacrunch.jsonToDB()
+        # add executed file to parsedFiles.json
+        # https://developer.oslobysykkel.no/data
         pass
 
     def getLocksFromJson(self, path, stationId):
