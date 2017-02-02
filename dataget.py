@@ -1,20 +1,78 @@
 import json
-from pymongo import MongoClient
 from bs4 import BeautifulSoup as bs
 import pandas as pd
+from zipfile import ZipFile
+from urllib.request import urlretrieve
 
-MongoClient("localhost", 27017)
 
-
-class dataget():
+class Dataget():
     def __init__(self):
         pass
 
     def getMonthlyTrips(self):
-        # TODO: Get new compressed file from oslo bysykkel and send the json file to datacrunch.jsonToDB()
-        # add executed file to parsedFiles.json
-        # https://developer.oslobysykkel.no/data
-        pass
+        """
+        Checks for new json files in https://developer.oslobysykkel.no/data, downloads the zip-folder extracts the files
+        and appends the to a list to be returned.
+        :return: list with dict of trips
+        """
+
+        rooturl = "https://developer.oslobysykkel.no"
+        rlist = []
+
+        with open("temp/monthindex.html", "r") as html:
+            soup = bs(html, "html.parser")
+
+        for trip in soup.findAll("li", {"class": "report-list-item"}):
+            content = bs(str(trip), "html.parser")
+            month = content.find("h3").contents[0]
+
+            # CsvUrl if needed
+            # csvUrl = content.find("a", text="CSV")["href"]
+
+            if not self.checkIfParsed("MonthData", month):
+                jsonUrl = content.find("a", text="JSON")["href"]
+
+                filehandle, _ = urlretrieve(rooturl+jsonUrl)
+                zip_file_object = ZipFile(filehandle, 'r')
+
+                first_file = zip_file_object.namelist()[0]
+                file = zip_file_object.open(first_file)
+                content = str(file.read())
+
+                rlist.append(content)
+
+                self.editParsed("MonthData", month)
+                print(content)
+            break
+        return rlist
+
+    def checkIfParsed(self, key, value):
+        """
+        Checks if value is in parsedFiles.json's key's element
+        :param key: str key in the json file
+        :param element: str vale in the list
+        :return: True if in list else false
+        """
+        with open("res/parsedFiles.json", "r") as file:
+            if value in json.load(file)[key]:
+                return True
+            else:
+                return False
+
+    def editParsed(self, key, value):
+        """
+        Appends value to parsedFiles.json's key's list
+        :param key: str key in the json file
+        :param element: value to ba appended in the list
+        :return: none
+        """
+        with open("res/parsedFiles.json", "r") as file:
+            data = json.load(file)
+
+        data[key].append(value)
+        with open("res/parsedFiles.json", "w") as file:
+            json.dump(data, file)
+
 
     def getLocksFromJson(self, path, stationId):
         """
@@ -64,6 +122,8 @@ class dataget():
         return pddf
 
 if __name__ == "__main__":
-    a = dataget()
+    a = Dataget()
     print(a.getLocksFromJson('res/stations.json', 157))
-    print(a.dataFromHtml("temp/temp.html"))
+    print(a.checkIfParsed("MonthData", "December 2016"))
+    a.editParsed("MonthData", "December 2016")
+    print(a.checkIfParsed("MonthData", "December 2016"))
