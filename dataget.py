@@ -19,6 +19,7 @@ class Dataget():
         rooturl = "https://developer.oslobysykkel.no"
         rlist = []
 
+        # Do from web
         with open("temp/monthindex.html", "r") as html:
             soup = bs(html, "html.parser")
 
