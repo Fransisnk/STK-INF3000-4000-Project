@@ -18,6 +18,31 @@ class TestDataget(unittest.TestCase):
 
         self.assertEqual(known, result)
 
+    def testDataFromHtml(self):
+        pass
+
+    def testGetLocksFromJson(self):
+        pass
+
+    def testCheckIfParsed(self):
+        pass
+
+    def testGetMonthlyTrips(self):
+        pass
+
+class TestDatacrunch(unittest.TestCase):
+
+    def testJsonToDB(self):
+        pass
+
+    def testGetFromDB(self):
+        pass
+
+    def testTripMerge(self):
+        pass
+
+
+
 if __name__ == "__main__":
     a = TestDataget()
     a.testGetYearFromHTML()
