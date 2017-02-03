@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup as bs
 import pandas as pd
 from zipfile import ZipFile
 from urllib.request import urlretrieve
+from datetime import datetime
 
 
 class Dataget():
@@ -74,7 +75,6 @@ class Dataget():
         with open("res/parsedFiles.json", "w") as file:
             json.dump(data, file)
 
-
     def getLocksFromJson(self, path, stationId):
         """
         Gets n locks from bike station by ID-nr
@@ -92,7 +92,7 @@ class Dataget():
     def getGPSFromJson(self, path, stationId):
         pass
 
-    def getYrHtmlFromDate(self, date):
+    def getYearHtmlFromDate(self, date):
         # TODO: Convert datetime to YYYY-MM-DD str
         """
         Takes an datetime object and returns url to yr for given day.
@@ -100,7 +100,8 @@ class Dataget():
         :param date: Datetime object
         :return: Str, url to given day
         """
-        return "https://www.yr.no/sted/Norge/Oslo/Oslo/Oslo/almanakk.html?dato=" + date
+        strDate = date.strftime("%Y-%m-%d")
+        return "https://www.yr.no/sted/Norge/Oslo/Oslo/Oslo/almanakk.html?dato=" + strDate
 
     def dataFromHtml(self, url):
         # TODO: Data needs cleanup, index can be Datetime
