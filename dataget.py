@@ -125,6 +125,7 @@ class Dataget():
 if __name__ == "__main__":
     a = Dataget()
     print(a.getLocksFromJson('res/stations.json', 157))
-    print(a.checkIfParsed("MonthData", "December 2016"))
-    a.editParsed("MonthData", "December 2016")
-    print(a.checkIfParsed("MonthData", "December 2016"))
+    # print(a.checkIfParsed("MonthData", "December 2016"))
+    # a.editParsed("MonthData", "December 2016")
+    # print(a.checkIfParsed("MonthData", "December 2016"))
+    print(a.dataFromHtml("temp/temp.html"))
