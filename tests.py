@@ -45,7 +45,7 @@ class TestDataget(unittest.TestCase):
                 self.assertIsInstance(e, type(dict()))
 
     def testUnzip(self):
-
+        # Git doesnt like zip, so download zip from bysykkel data
         result = self.testClass.unzip("temp/testzip.zip")
         self.assertIsInstance(result, type(dict()))
 
