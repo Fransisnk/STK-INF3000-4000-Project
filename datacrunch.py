@@ -3,31 +3,47 @@ import pandas as pd
 import os
 import json
 from pymongo import MongoClient
+from dataget import Dataget
 
+class Datacrunch(Dataget):
 
-class Datacrunch():
     def __init__(self):
+
+        Dataget.__init__(self)
+
         self.client = MongoClient()
         # MongoClient('localhost', 27017), MongoClient('mongodb://localhost:27017/')
         self.tripDb = self.client.tripDb
-        self.posts = self.tripDb.posts
+        self.trips = self.tripDb.trips
+        self.stations = self.tripDb.stations
+
         self.trippath = "res/trips"
         # self.tripData = pd.read_csv("res/totTrip.csv", sep=",", parse_dates=['Start time', 'End time'])
 
-    def jsonToDB(self, jsonFile):
+    def updateDB(self):
         """
-        Takes a monthly json file from OSLO bysykkel and adds the data to the database
-        :param jsonFile: json file
+        Adds new trips to the database
         :return: None
         """
-        data = json.load(jsonFile)["trips"]
-        self.posts.insert_many(data)
+        for e in self.getMonthlyTrips():
+            self.jsonToDB(e)
+
+    def jsonToDB(self, dict):
+        """
+        Takes a monthly json file from OSLO bysykkel and adds the data to the database
+        :param dict: dict file
+        :return: None
+        """
+        data = dict["trips"]
+        self.trips.insert_many(data)
 
     def getFromDB(self):
-        print(self.posts.find_one())
+        print(self.trips.find_one())
 
     def tripMerge(self):
         """
+        Maybe not usefull
+
         Combines all new bike-trips located in /res/trips to one pandas-dataframe with older csv.
         :return: pandas dataframe with all trips
         """
@@ -60,9 +76,11 @@ class Datacrunch():
         return self.tripData
 
     def clearDB(self):
-        self.posts.remove()
+        self.trips.remove()
 
 if __name__ == "__main__":
     a = Datacrunch()
-    a.jsonToDB()
+    a.jsonToDB(a.unzip("temp/testzip.zip"))
+    #a.updateDB()
+    #a.jsonToDB()
     a.getFromDB()

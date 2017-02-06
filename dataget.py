@@ -14,15 +14,15 @@ class Dataget():
         """
         Extracts and returns the first json-file in an zipped archive
         :param file: str path to the zipped archive containing a json file
-        :return: json object
+        :return: dict object
         """
         zip_file_object = ZipFile(file, 'r')
         first_file = zip_file_object.namelist()[0]
         file = zip_file_object.open(first_file)
         readfile = file.read()
 
-        jfile = json.loads(readfile.decode("utf-8"))
-        return jfile
+        dict = json.loads(readfile.decode("utf-8"))
+        return dict
 
     def getMonthlyTrips(self):
         """
@@ -134,6 +134,13 @@ class Dataget():
                         "Humidity"]
 
         return pddf
+
+    def getFutureWeather(self):
+        """
+        Gets the next 48 hours of weather data from yr, and returns the relevant data in a pandas dataframe
+        :return: pandas dataframe??
+        """
+        url = "http://www.yr.no/stad/Noreg/Oslo/Oslo/Oslo/varsel_time_for_time.xml"
 
 if __name__ == "__main__":
     a = Dataget()
