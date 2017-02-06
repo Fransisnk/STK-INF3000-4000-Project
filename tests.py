@@ -9,26 +9,32 @@ from datacrunch import Datacrunch
 from dataget import Dataget
 
 class TestDataget(unittest.TestCase):
+
+    testClass = Dataget()
+
     def testGetYearFromHTML(self):
 
-        getClass = Dataget()
         date = datetime.strptime('160416','%d%m%y')
-        result = getClass.getYearHtmlFromDate(date)
+        result = self.testClass.getYearHtmlFromDate(date)
         known = "https://www.yr.no/sted/Norge/Oslo/Oslo/Oslo/almanakk.html?dato=2016-04-16"
 
         self.assertEqual(known, result)
 
-    def testDataFromHtml(self):
-        pass
+    def testGetPastWeather(self):
+        # Change arg when switching to html
+        result = self.testClass.getPastWeather("temp/temp.html")
+        self.assertIsInstance(result, type(pd.DataFrame()))
 
     def testGetLocksFromJson(self):
         pass
 
     def testCheckIfParsed(self):
-        pass
+        self.assertTrue(self.testClass.checkIfParsed("TestData", "test"))
+        self.assertFalse(self.testClass.checkIfParsed("TestDat", "test"))
 
     def testGetMonthlyTrips(self):
-        pass
+        result = self.testClass.getMonthlyTrips()
+        self.assertIsInstance(result, type(list()))
 
 class TestDatacrunch(unittest.TestCase):
 

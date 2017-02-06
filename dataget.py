@@ -56,10 +56,13 @@ class Dataget():
         :return: True if in list else false
         """
         with open("res/parsedFiles.json", "r") as file:
-            if value in json.load(file)[key]:
-                return True
-            else:
-                return False
+            try:
+                if value in json.load(file)[key]:
+                    return True
+            except Exception as e:
+                print("Invalid key given: ")
+                print(e)
+        return False
 
     def editParsed(self, key, value):
         """
@@ -103,7 +106,7 @@ class Dataget():
         strDate = date.strftime("%Y-%m-%d")
         return "https://www.yr.no/sted/Norge/Oslo/Oslo/Oslo/almanakk.html?dato=" + strDate
 
-    def dataFromHtml(self, url):
+    def getPastWeather(self, url):
         # TODO: Data needs cleanup, index can be Datetime
         """
         Takes an url to yr, parses the html and makes an pandas data frame with the usefull information.
