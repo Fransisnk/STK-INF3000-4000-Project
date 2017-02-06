@@ -10,6 +10,20 @@ class Dataget():
     def __init__(self):
         pass
 
+    def unzip(self, file):
+        """
+        Extracts and returns the first json-file in an zipped archive
+        :param file: str path to the zipped archive containing a json file
+        :return: json object
+        """
+        zip_file_object = ZipFile(file, 'r')
+        first_file = zip_file_object.namelist()[0]
+        file = zip_file_object.open(first_file)
+        readfile = file.read()
+
+        jfile = json.loads(readfile.decode("utf-8"))
+        return jfile
+
     def getMonthlyTrips(self):
         """
         Checks for new json files in https://developer.oslobysykkel.no/data, downloads the zip-folder extracts the files
@@ -35,16 +49,11 @@ class Dataget():
                 jsonUrl = content.find("a", text="JSON")["href"]
 
                 filehandle, _ = urlretrieve(rooturl+jsonUrl)
-                zip_file_object = ZipFile(filehandle, 'r')
 
-                first_file = zip_file_object.namelist()[0]
-                file = zip_file_object.open(first_file)
-                content = str(file.read())
-
-                rlist.append(content)
+                jsondata = self.unzip(filehandle)
+                rlist.append(jsondata)
 
                 self.editParsed("MonthData", month)
-                print(content)
             break
         return rlist
 
@@ -128,8 +137,10 @@ class Dataget():
 
 if __name__ == "__main__":
     a = Dataget()
-    print(a.getLocksFromJson('res/stations.json', 157))
+    #print(a.getLocksFromJson('res/stations.json', 157))
     # print(a.checkIfParsed("MonthData", "December 2016"))
     # a.editParsed("MonthData", "December 2016")
     # print(a.checkIfParsed("MonthData", "December 2016"))
-    print(a.dataFromHtml("temp/temp.html"))
+    #print(a.dataFromHtml("temp/temp.html"))
+
+    a.unzip("temp/testzip.zip")

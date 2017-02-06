@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from io import StringIO
 from datetime import datetime
+import json
 
 
 from datacrunch import Datacrunch
@@ -22,6 +23,7 @@ class TestDataget(unittest.TestCase):
 
     def testGetPastWeather(self):
         # Change arg when switching to html
+
         result = self.testClass.getPastWeather("temp/temp.html")
         self.assertIsInstance(result, type(pd.DataFrame()))
 
@@ -29,12 +31,23 @@ class TestDataget(unittest.TestCase):
         pass
 
     def testCheckIfParsed(self):
+
         self.assertTrue(self.testClass.checkIfParsed("TestData", "test"))
         self.assertFalse(self.testClass.checkIfParsed("TestDat", "test"))
 
     def testGetMonthlyTrips(self):
+
         result = self.testClass.getMonthlyTrips()
         self.assertIsInstance(result, type(list()))
+
+        if len(result) != 0:
+            for e in result:
+                self.assertIsInstance(e, type(dict()))
+
+    def testUnzip(self):
+
+        result = self.testClass.unzip("temp/testzip.zip")
+        self.assertIsInstance(result, type(dict()))
 
 class TestDatacrunch(unittest.TestCase):
 
