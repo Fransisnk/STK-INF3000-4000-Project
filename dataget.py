@@ -2,7 +2,7 @@ import json
 from bs4 import BeautifulSoup as bs
 import pandas as pd
 from zipfile import ZipFile
-from urllib.request import urlretrieve
+from urllib.request import urlretrieve, urlopen
 from datetime import datetime
 
 
@@ -105,7 +105,6 @@ class Dataget():
         pass
 
     def getYearHtmlFromDate(self, date):
-        # TODO: Convert datetime to YYYY-MM-DD str
         """
         Takes an datetime object and returns url to yr for given day.
             url in the form Oslo/Oslo/Oslo/almanakk.html?dato=YYYY-MM-DD
@@ -140,7 +139,26 @@ class Dataget():
         Gets the next 48 hours of weather data from yr, and returns the relevant data in a pandas dataframe
         :return: pandas dataframe??
         """
+
         url = "http://www.yr.no/stad/Noreg/Oslo/Oslo/Oslo/varsel_time_for_time.xml"
+        #xml = urlopen(url).read()
+        #soup = bs(xml, features="xml")
+
+        with open("temp/test.xml", "r") as html:
+            soup = bs(html, features="xml")
+
+        for content in soup.findAll("time"):
+            content = bs(str(content), features="xml")
+
+            time = content.find("time")["from"]
+            weatherType = content.find("symbol")["name"]
+            temp = content.find("temperature")["value"]
+            wind = content.find("windSpeed")["mps"]
+
+            print(time.split("T"))
+            print(weatherType)
+
+            break
 
 if __name__ == "__main__":
     a = Dataget()
@@ -149,5 +167,4 @@ if __name__ == "__main__":
     # a.editParsed("MonthData", "December 2016")
     # print(a.checkIfParsed("MonthData", "December 2016"))
     #print(a.dataFromHtml("temp/temp.html"))
-
-    a.unzip("temp/testzip.zip")
+    a.getFutureWeather()

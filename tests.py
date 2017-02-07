@@ -13,7 +13,7 @@ class TestDataget(unittest.TestCase):
 
     testClass = Dataget()
 
-    def testGetYearFromHTML(self):
+    def testGetYearHtmlFromDate(self):
 
         date = datetime.strptime('160416','%d%m%y')
         result = self.testClass.getYearHtmlFromDate(date)
@@ -49,6 +49,11 @@ class TestDataget(unittest.TestCase):
         result = self.testClass.unzip("temp/testzip.zip")
         self.assertIsInstance(result, type(dict()))
 
+    def testGetFutureWeather(self):
+
+        result = self.testClass.getFutureWeather()
+        self.assertIsInstance(result, type(pd.DataFrame()))
+
 class TestDatacrunch(unittest.TestCase):
 
     def testJsonToDB(self):
@@ -61,7 +66,6 @@ class TestDatacrunch(unittest.TestCase):
         pass
 
 
-
 if __name__ == "__main__":
+
     a = TestDataget()
-    a.testGetYearFromHTML()
