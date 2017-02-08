@@ -102,7 +102,12 @@ class Dataget():
         return None
 
     def getGPSFromJson(self, path, stationId):
-        pass
+        with open(path) as data_file:
+            data = json.load(data_file)
+        for station in data['stations']:
+            if station['id'] == stationId:
+                return ((station['center']['latitude'], station['center']['longitude']))
+
 
     def getYearHtmlFromDate(self, date):
         """
@@ -162,9 +167,11 @@ class Dataget():
 
 if __name__ == "__main__":
     a = Dataget()
+
     #print(a.getLocksFromJson('res/stations.json', 157))
     # print(a.checkIfParsed("MonthData", "December 2016"))
     # a.editParsed("MonthData", "December 2016")
     # print(a.checkIfParsed("MonthData", "December 2016"))
     #print(a.dataFromHtml("temp/temp.html"))
     a.getFutureWeather()
+
