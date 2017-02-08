@@ -165,13 +165,24 @@ class Dataget():
 
             break
 
+
+    def create_marker_list(self, path):
+        markerList = []
+        with open(path) as data_file:
+            data = json.load(data_file)
+        stations = data.get('stations')
+        for station in stations:
+            markerList.append((station['center']['latitude'], station['center']['longitude']))
+        return markerList
+
+
 if __name__ == "__main__":
     a = Dataget()
-
+    print(a.create_marker_list('res/stations.json'))
     #print(a.getLocksFromJson('res/stations.json', 157))
     # print(a.checkIfParsed("MonthData", "December 2016"))
     # a.editParsed("MonthData", "December 2016")
     # print(a.checkIfParsed("MonthData", "December 2016"))
     #print(a.dataFromHtml("temp/temp.html"))
-    a.getFutureWeather()
+    #a.getFutureWeather()
 
