@@ -149,10 +149,12 @@ class Dataget():
         #xml = urlopen(url).read()
         #soup = bs(xml, features="xml")
 
-        with open("temp/test.xml", "r") as html:
+        with open("publicRes/test.xml", "r") as html:
             soup = bs(html, features="xml")
 
-        for content in soup.findAll("time"):
+        tab = soup.find("tabular")
+
+        for content in tab.findAll("time"):
             content = bs(str(content), features="xml")
 
             time = content.find("time")["from"]
@@ -160,10 +162,11 @@ class Dataget():
             temp = content.find("temperature")["value"]
             wind = content.find("windSpeed")["mps"]
 
-            print(time.split("T"))
+            date, time = time.split("T")
+            datetime_object = datetime.strptime(date, '%Y-%m-%d')
+            print(time)
             print(weatherType)
-
-            break
+            print("Month:", self.db.addMonth(datetime_object))
 
 
     def create_marker_list(self, path):
